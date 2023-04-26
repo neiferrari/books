@@ -1,39 +1,54 @@
-from flask import Flask, g
+from flask import Flask, g, jsonify
 import psycopg2
 
-app=flask(__name__)
+app = Flask(__name__)
 
 def get_db():
-    db=getattr(g,'_database',None)
-    if db in None:
+    db = getattr(g, '_database', None)
+    if db is None:
         db = psycopg2.connect(
-                                user="postgres",
-                                password="PIKqPhxx35Ymhm3MIgdR",
-                                host="containers-us-west-17.railway.app",
-                                port="5679",
-                                database="railway"
+                                user = "postgres",
+                                password = "PIKqPhxx35Ymhm3MIgdR",
+                                host = "containers-us-west-17.railway.app",
+                                port = "5679",
+                                database = "railway"
                                 )
     return db
 
 @app.teardown_appcontext
 def close_connection(exception):
-    db=getattr(g,'_database',None)
+    db = getattr(g, '_database', None)
     if db is not None:
         db.close()
 
 @app.route('/',methods=['GET'])
 def home():
-    conn=get_db()
-    cursor=conn.cursor()
+    conn = get_db()
+    cursor = conn.cursor()
     cursor.execute("SELECT * FROM books_table")
-    totalRows=cursor.fetchall()
-    num_books=len(totalRows)
+    books = cursor.fetchall()
+
+    num_books = len(books)
+
     cursor.close()
 
-    home_display=f"""
+    home_display = f"""
     <h1>API Books</h1>
-    <p>API w/ {num_books} Books."""
+    <p>API w/ {num_books} Books.</p>"""
+
     return home_display
 
+@app.route('/books', methods = ['GET'])
+def get_books():
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM books_table")
+    books = cursor.fetchall()
+
+    cursor.close()
+
+    return jsonify(books)
+
+#Run App
 if __name__ == '__main__':
     app.run(debug=True)
