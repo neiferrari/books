@@ -1,7 +1,11 @@
 from flask import Flask, g, jsonify
 import psycopg2
 
+<<<<<<< HEAD
 app = Flask(__name__)
+=======
+app = flask(__name__)
+>>>>>>> 0688a59e0c1c0e139a379a6a3ed54eca70438d6a
 
 def get_db():
     db = getattr(g, '_database', None)
