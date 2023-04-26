@@ -34,3 +34,6 @@ def home():
     <h1>API Books</h1>
     <p>API w/ {num_books} Books."""
     return home_display
+
+if __name__ == '__main__':
+    app.run(debug=True)
