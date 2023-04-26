@@ -1,7 +1,7 @@
 from flask import Flask, g
 import psycopg2
 
-app=flask(__name__)
+app = flask(__name__)
 
 def get_db():
     db=getattr(g,'_database',None)
